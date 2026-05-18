@@ -1,0 +1,48 @@
+[
+  {
+    "name": "Clang 21.1.8 x86_64-redhat-linux-gnu",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang",
+      "CXX": "/usr/bin/clang++"
+    },
+    "isTrusted": true
+  },
+  {
+    "name": "Clang-cl 21.1.8 x86_64-pc-windows-msvc",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang-cl",
+      "CXX": "/usr/bin/clang-cl"
+    },
+    "toolchainFile": "/home/mariomastr/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-cl-msvc.cmake",
+    "environmentVariables": {
+      "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
+      "HOST_ARCH": "x86_64"
+    },
+    "isTrusted": true
+  },
+  {
+    "name": "Clang 21.1.8 x86_64-pc-windows-gnu",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang",
+      "CXX": "/usr/bin/clang++"
+    },
+    "toolchainFile": "/home/mariomastr/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-msvc.cmake",
+    "environmentVariables": {
+      "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
+      "HOST_ARCH": "x86_64"
+    },
+    "isTrusted": true
+  },
+  {
+    "name": "GCC 15.2.1 x86_64-redhat-linux",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/gcc",
+      "CXX": "/usr/bin/g++"
+    },
+    "isTrusted": true
+  }
+]
