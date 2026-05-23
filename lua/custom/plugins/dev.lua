@@ -5,7 +5,8 @@ vim.pack.add {
     "https://github.com/civitasv/cmake-tools.nvim",
     "https://github.com/stevearc/overseer.nvim",
     "https://github.com/akinsho/toggleterm.nvim",
-    "https://github.com/Zeioth/compiler.nvim"
+    "https://github.com/Zeioth/compiler.nvim",
+    "https://github.com/neovim/nvim-lspconfig"
 }
 
 -- cmake-tools
@@ -57,7 +58,7 @@ dap.configurations.rust = dap.configurations.cpp
 
 -- lsp
 vim.lsp.enable("clangd")
-vim.lsp.enable("rust-analyzer")
+vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("zls")
 vim.lsp.enable("gopls")
 
@@ -96,3 +97,19 @@ vim.lsp.config.clangd = {
         clangdFileStatus = true,
     }
 }
+
+vim.lsp.codelens.enable(true)
+vim.lsp.inlay_hint.enable(true)
+
+vim.cmd[[set completeopt+=menuone,noselect,popup]]
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        vim.lsp.completion.enable(true, args.data.client_id, args.buf, {
+            autotrigger = true,
+            convert = function(item)
+            return { abbr = item.label:gsub('%b()', '') }
+            end,
+        })
+    end,
+})
