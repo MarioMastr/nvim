@@ -193,6 +193,7 @@ do
 
   -- Save File
   vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+  vim.keymap.set({ "i", "x", "n", "s" }, "<D-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`

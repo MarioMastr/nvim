@@ -1,4 +1,4 @@
--- compiling + debugging
+-- compiling + debugging + lsp
 
 vim.pack.add {
     "https://codeberg.org/mfussenegger/nvim-dap",
@@ -6,7 +6,9 @@ vim.pack.add {
     "https://github.com/stevearc/overseer.nvim",
     "https://github.com/akinsho/toggleterm.nvim",
     "https://github.com/Zeioth/compiler.nvim",
-    "https://github.com/neovim/nvim-lspconfig"
+    "https://github.com/neovim/nvim-lspconfig",
+    "https://github.com/mason-org/mason.nvim",
+    "https://github.com/mason-org/mason-lspconfig.nvim"
 }
 
 -- cmake-tools
@@ -38,7 +40,6 @@ dap.adapters.lldb = {
     name = 'lldb'
 }
 
-local dap = require('dap')
 dap.configurations.cpp = {
     {
         name = 'Launch',
@@ -113,3 +114,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
         })
     end,
 })
+
+-- mason
+require("mason").setup {}
+require("mason-lspconfig").setup {
+    ensure_installed = {"rust_analyzer"}
+}
