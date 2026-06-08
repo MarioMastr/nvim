@@ -1,4 +1,4 @@
--- compiling + debugging + lsp
+-- compiling + debugging + lsp + autocomplete
 
 vim.pack.add {
     "https://codeberg.org/mfussenegger/nvim-dap",
@@ -11,6 +11,7 @@ vim.pack.add {
     "https://github.com/mason-org/mason-lspconfig.nvim"
 }
 
+
 -- cmake-tools
 require("cmake-tools").setup {
     cmake_build_directory = "build",
@@ -18,19 +19,24 @@ require("cmake-tools").setup {
     cmake_build_options =  { "--parallel" }
 }
 
+
 -- overseer
 require("overseer").setup {}
+
 
 -- toggleterm
 require("toggleterm").setup {}
 
+
 -- compiler
 require("compiler").setup {}
+
 
 -- keybinds
 vim.api.nvim_set_keymap('n', '<F6>', "<cmd>CompilerOpen<cr>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<S-F6>', "<cmd>CompilerStop<cr>" .. "<cmd>CompilerRedo<cr>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<S-F7>', "<cmd>CompilerToggleResults<cr>", { noremap = true, silent = true })
+
 
 -- nvim-dap
 local dap = require('dap')
@@ -57,11 +63,13 @@ dap.configurations.cpp = {
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
+
 -- lsp
 vim.lsp.enable("clangd")
 vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("zls")
 vim.lsp.enable("gopls")
+vim.lsp.enable("copilot")
 
 vim.lsp.config.clangd = {
     keys = {
@@ -112,8 +120,40 @@ vim.api.nvim_create_autocmd("LspAttach", {
             return { abbr = item.label:gsub('%b()', '') }
             end,
         })
+
+        local bufnr = args.buf
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+        if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
+            vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+
+        vim.keymap.set(
+            'i',
+            '<C-F>',
+            vim.lsp.inline_completion.get,
+            { desc = 'LSP: accept inline completion', buffer = bufnr }
+        )
+        vim.keymap.set(
+            'i',
+            '<C-G>',
+            vim.lsp.inline_completion.select,
+            { desc = 'LSP: switch inline completion', buffer = bufnr }
+        )
+        end
     end,
 })
+
+local opts = { noremap=true, silent=true }
+
+local function quickfix()
+    vim.lsp.buf.code_action({
+        filter = function(a) return a.isPreferred end,
+        apply = true
+    })
+end
+
+vim.keymap.set('n', '<leader>qf', quickfix, opts)
+
 
 -- mason
 require("mason").setup {}
