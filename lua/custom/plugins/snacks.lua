@@ -1,5 +1,14 @@
 vim.pack.add {"https://github.com/folke/snacks.nvim"}
 
+require('snacks').setup {
+    explorer = { enabled = true },
+    picker = {
+        sources = {
+            explorer = { hidden = true }
+        }
+    }
+}
+
 -- Top Pickers & Explorer
 vim.keymap.set("n", "<leader><space>", function() Snacks.picker.smart() end, { desc = "Smart Find Files" })
 vim.keymap.set("n", "<leader>,", function() Snacks.picker.buffers() end, { desc = "Buffers" })
@@ -14,14 +23,6 @@ vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files() end, { desc =
 vim.keymap.set("n", "<leader>fg", function() Snacks.picker.git_files() end, { desc = "Find Git Files" })
 vim.keymap.set("n", "<leader>fp", function() Snacks.picker.projects() end, { desc = "Projects" })
 vim.keymap.set("n", "<leader>fr", function() Snacks.picker.recent() end, { desc = "Recent" })
--- git
-vim.keymap.set("n", "<leader>gb", function() Snacks.picker.git_branches() end, { desc = "Git Branches" })
-vim.keymap.set("n", "<leader>gl", function() Snacks.picker.git_log() end, { desc = "Git Log" })
-vim.keymap.set("n", "<leader>gL", function() Snacks.picker.git_log_line() end, { desc = "Git Log Line" })
-vim.keymap.set("n", "<leader>gs", function() Snacks.picker.git_status() end, { desc = "Git Status" })
-vim.keymap.set("n", "<leader>gS", function() Snacks.picker.git_stash() end, { desc = "Git Stash" })
-vim.keymap.set("n", "<leader>gd", function() Snacks.picker.git_diff() end, { desc = "Git Diff (Hunks)" })
-vim.keymap.set("n", "<leader>gf", function() Snacks.picker.git_log_file() end, { desc = "Git Log File" })
 -- gh
 vim.keymap.set("n", "<leader>gi", function() Snacks.picker.gh_issue() end, { desc = "GitHub Issues (open)" })
 vim.keymap.set("n", "<leader>gI", function() Snacks.picker.gh_issue({ state = "all" }) end, { desc = "GitHub Issues (all)" })
@@ -79,3 +80,14 @@ vim.keymap.set("n", "<c-/>",      function() Snacks.terminal() end, { desc = "To
 vim.keymap.set("n", "<c-_>",      function() Snacks.terminal() end, { desc = "which_key_ignore" })
 vim.keymap.set({"n", "t" }, "]]",         function() Snacks.words.jump(vim.v.count1) end, { desc = "Next Reference" })
 vim.keymap.set({"n", "t" }, "[[",         function() Snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference" })
+
+-- autocommands
+vim.api.nvim_create_autocmd("FocusGained", {
+    group = vim.api.nvim_create_augroup("explorer_focus_refresh", { clear = true }),
+    callback = function()
+        local explorers = Snacks.picker.get({ source = "explorer" })
+        for _, picker in ipairs(explorers) do
+            picker:action("explorer_update")
+        end
+    end,
+})

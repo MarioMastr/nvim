@@ -40,16 +40,16 @@ vim.api.nvim_set_keymap('n', '<S-F7>', "<cmd>CompilerToggleResults<cr>", { norem
 
 -- nvim-dap
 local dap = require('dap')
-dap.adapters.lldb = {
-    type = 'executable',
-    command = '/usr/bin/lldb-dap', -- adjust as needed, must be absolute path
-    name = 'lldb'
+dap.adapters.gdb = {
+    type = "executable",
+    command = "gdb",
+    args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
 }
 
 dap.configurations.cpp = {
     {
         name = 'Launch',
-        type = 'lldb',
+        type = 'gdb',
         request = 'launch',
         program = function()
         return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
@@ -146,7 +146,7 @@ vim.lsp.config.sourcekit_lsp = {
 vim.lsp.codelens.enable(true)
 vim.lsp.inlay_hint.enable(true)
 
-vim.cmd[[set completeopt+=menuone,noselect,popup]]
+vim.cmd[[set completeopt+=menuone,popup,noinsert,fuzzy]]
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
@@ -156,44 +156,34 @@ vim.api.nvim_create_autocmd("LspAttach", {
         if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
             vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
 
-        vim.keymap.set(
-            'i',
-            '<C-F>',
-            vim.lsp.inline_completion.get,
-            { desc = 'LSP: accept inline completion', buffer = bufnr }
-        )
-        vim.keymap.set(
-            'i',
-            '<C-G>',
-            vim.lsp.inline_completion.select,
-            { desc = 'LSP: switch inline completion', buffer = bufnr }
-        )
+            vim.keymap.set(
+                'i',
+                '<C-F>',
+                vim.lsp.inline_completion.get,
+                { desc = 'LSP: accept inline completion', buffer = bufnr }
+            )
+            vim.keymap.set(
+                'i',
+                '<C-G>',
+                vim.lsp.inline_completion.select,
+                { desc = 'LSP: switch inline completion', buffer = bufnr }
+            )
 
-        vim.lsp.completion.enable(true, args.data.client_id, args.buf, {
-            autotrigger = true,
-            convert = function(item)
-            return { abbr = item.label:gsub('%b()', '') }
-            end,
-        })
-
+            vim.lsp.completion.enable(true, args.data.client_id, args.buf, {
+                autotrigger = true,
+                convert = function(item)
+                return { abbr = item.label:gsub('%b()', '') }
+                end,
+            })
         end
     end,
 })
 
 local opts = { noremap=true, silent=true }
 
-local function quickfix()
-    vim.lsp.buf.code_action({
-        filter = function(a) return a.isPreferred end,
-        apply = true
-    })
-end
-
-vim.keymap.set('n', '<leader>qf', quickfix, opts)
-
+vim.keymap.set('n', '<leader>qf', function() vim.lsp.buf.code_action() end, opts)
+vim.keymap.set('n', '<leader>F', function() vim.lsp.buf.format { async = true } end, opts)
 
 -- mason
 require("mason").setup {}
-require("mason-lspconfig").setup {
-    ensure_installed = {"rust_analyzer"}
-}
+require("mason-lspconfig").setup {}

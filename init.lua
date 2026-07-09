@@ -444,6 +444,16 @@ do
   -- - sr)'  - [S]urround [R]eplace [)] [']
   require('mini.surround').setup()
 
+  require('mini.icons').setup {
+    file = {
+      [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
+      ["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
+    },
+    filetype = {
+      dotenv = { glyph = "", hl = "MiniIconsYellow" },
+    },
+  }
+
   -- Simple and easy statusline.
   --  You could remove this setup call if you don't like it,
   --  and try some other statusline plugin
@@ -470,22 +480,48 @@ do
       right_mouse_command = function(n) Snacks.bufdelete(n) end,
       diagnostics = "nvim_lsp",
       always_show_bufferline = false,
-      diagnostics_indicator = function(count, level, diagnostics_dict, context)
-      local icon = level:match("error") and " " or " "
-      return " " .. icon .. count
+      diagnostics_indicator = function(count, level, diag, context)
+        local icon = level:match("error") and " " or " "
+        return icon
       end,
       offsets = {
         {
-          filetype = "neo-tree",
-          text = "Neo-tree",
-          highlight = "Directory",
-          text_align = "left",
-        },
-        {
           filetype = "snacks_layout_box",
+          text = 'Explorer',
+          highlight = 'Directory',
+          text_align = 'left'
         },
       },
     }
+  }
+
+  vim.pack.add({ gh 'folke/noice.nvim', gh 'MunifTanjim/nui.nvim' })
+  require('noice').setup {
+    lsp = {
+      override = {
+        ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+        ["vim.lsp.util.stylize_markdown"] = true,
+        ["cmp.entry.get_documentation"] = true,
+      },
+    },
+    routes = {
+      {
+        filter = {
+          event = "msg_show",
+          any = {
+            { find = "%d+L, %d+B" },
+            { find = "; after #%d+" },
+            { find = "; before #%d+" },
+          },
+        },
+        view = "mini",
+      },
+    },
+    presets = {
+      bottom_search = true,
+      command_palette = true,
+      long_message_to_split = true,
+    },
   }
 end
 
@@ -1013,7 +1049,7 @@ do
   require 'kickstart.plugins.indent_line'
   require 'kickstart.plugins.lint'
   require 'kickstart.plugins.autopairs'
-  require 'kickstart.plugins.neo-tree'
+  -- require 'kickstart.plugins.neo-tree'
   require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
