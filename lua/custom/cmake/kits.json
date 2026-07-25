@@ -23,6 +23,24 @@
     "isTrusted": true
   },
   {
+    "name": "Clang-cl 21.1.8 x86_64-pc-windows-msvc vcpkg",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang-cl",
+      "CXX": "/usr/bin/clang-cl"
+    },
+    "toolchainFile": "/home/mariomastr/vcpkg/scripts/buildsystems/vcpkg.cmake",
+    "cmakeSettings": {
+      "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "/home/mariomastr/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-cl-msvc.cmake",
+      "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+    },
+    "environmentVariables": {
+      "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
+      "HOST_ARCH": "x86_64"
+    },
+    "isTrusted": true
+  },
+  {
     "name": "Clang 21.1.8 x86_64-pc-windows-gnu",
     "generator": "Ninja",
     "compilers": {
@@ -33,6 +51,52 @@
     "environmentVariables": {
       "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
       "HOST_ARCH": "x86_64"
+    },
+    "isTrusted": true
+  },
+  {
+    "name": "Clang 21.1.8 x86_64-pc-windows-gnu vcpkg",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang",
+      "CXX": "/usr/bin/clang++"
+    },
+    "toolchainFile": "/home/mariomastr/vcpkg/scripts/buildsystems/vcpkg.cmake",
+    "cmakeSettings": {
+      "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "/home/mariomastr/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-msvc.cmake",
+      "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+    },
+    "environmentVariables": {
+      "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
+      "HOST_ARCH": "x86_64"
+    },
+    "isTrusted": true
+  },
+  {
+    "name": "Clang-cl 21.1.8 x86-pc-windows-msvc",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang-cl",
+      "CXX": "/usr/bin/clang-cl"
+    },
+    "toolchainFile": "/home/mariomastr/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-cl-msvc.cmake",
+    "environmentVariables": {
+      "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
+      "HOST_ARCH": "x86"
+    },
+    "isTrusted": true
+  },
+  {
+    "name": "Clang 21.1.8 x86-pc-windows-gnu",
+    "generator": "Ninja",
+    "compilers": {
+      "C": "/usr/bin/clang",
+      "CXX": "/usr/bin/clang++"
+    },
+    "toolchainFile": "/home/mariomastr/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-msvc.cmake",
+    "environmentVariables": {
+      "SPLAT_DIR": "/home/mariomastr/.local/share/Geode/cross-tools/splat",
+      "HOST_ARCH": "x86"
     },
     "isTrusted": true
   },
