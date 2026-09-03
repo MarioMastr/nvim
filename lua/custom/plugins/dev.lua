@@ -8,7 +8,8 @@ vim.pack.add {
     "https://github.com/Zeioth/compiler.nvim",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/mason-org/mason.nvim",
-    "https://github.com/mason-org/mason-lspconfig.nvim"
+    "https://github.com/mason-org/mason-lspconfig.nvim",
+    "https://github.com/mrcjkb/rustaceanvim"
 }
 
 
@@ -46,22 +47,25 @@ dap.adapters.gdb = {
     args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
 }
 
-dap.configurations.cpp = {
+dap.configurations.c = {
     {
         name = 'Launch',
         type = 'gdb',
         request = 'launch',
         program = function()
-        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
-        args = {},
+        args = function()
+            local input = vim.fn.input('Program arguments: ', '')
+            return vim.fn.split(input, " ", true)
+        end,
     },
 }
 
-dap.configurations.c = dap.configurations.cpp
-dap.configurations.rust = dap.configurations.cpp
+dap.configurations.cpp = dap.configurations.c
+dap.configurations.rust = dap.configurations.c
 
 vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
 vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
@@ -97,11 +101,29 @@ vim.keymap.set('n', '<Leader>ds',
 
 -- lsp
 vim.lsp.enable("clangd")
-vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("zls")
 vim.lsp.enable("gopls")
 vim.lsp.enable("copilot")
 vim.lsp.enable("sourcekit-lsp")
+
+local bufnr = vim.api.nvim_get_current_buf()
+vim.keymap.set(
+    "n",
+    "<leader>a",
+    function()
+    vim.cmd.RustLsp('codeAction') -- supports rust-analyzer's grouping
+    -- or vim.lsp.buf.codeAction() if you don't want grouping.
+    end,
+    { silent = true, buffer = bufnr }
+)
+vim.keymap.set(
+    "n",
+    "K",  -- Override Neovim's built-in hover keymap with rustaceanvim's hover actions
+    function()
+    vim.cmd.RustLsp({'hover', 'actions'})
+    end,
+    { silent = true, buffer = bufnr }
+)
 
 vim.lsp.config.clangd = {
     keys = {
